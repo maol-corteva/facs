@@ -1,6 +1,6 @@
 # Common compiler flags for all OS
 CFLAGS=-O3 -Wall -g -DNODEBUG
-
+CC = gcc
 # Detect OS
 # UNAME := $(shell uname -s)
 # ifneq ($(UNAME), Darwin) # IF Linux
@@ -14,18 +14,20 @@ CFLAGS=-O3 -Wall -g -DNODEBUG
 # Detect OS
 UNAME := $(shell uname -s)
 ifeq ($(UNAME),Linux)
-	CFLAGS +=-fopenmp -static -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -m64
+	CFLAGS+=-fopenmp -static -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -m64 -std=c11
+	LDFLAGS+="-static -static-libgcc -static-libstdc++"
 	LIBS=-lm -lz
 endif
 ifeq ($(UNAME),Darwin)
-	CFLAGS +=-fopenmp -Wno-unknown-pragmas -Wno-unused-value
+	CC=/opt/homebrew/bin/gcc-14
+	CFLAGS+=-Wno-unknown-pragmas -Wno-unused-value -std=c11
 	LIBS=-lz
 endif
 
 #  CPU architecture:
 UNAME_P := $(shell uname -m)
 ifeq ($(UNAME_P),x86_64)
-	CFLAGS += -arch x86_64
+	CXXFLAGS += -march=native -mtune=native
 endif
 ifneq ($(filter arm%,$(UNAME_P)),)
 	CFLAGS += -arch arm64
