@@ -12,22 +12,25 @@ CC = gcc
 # endif
 
 # Detect OS
+# Compiling Linux-amd64 as a STATIC still requires us to copy the OpenMP lib
+#   that was used to compile FACS with (see Dockerfile copying of libgomp.so.1 )
 UNAME := $(shell uname -s)
 ifeq ($(UNAME),Linux)
-	CFLAGS+=-fopenmp -static -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -m64 -std=c11
+	CFLAGS+=-fopenmp -static -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -m64 -std=gnu11
 	LDFLAGS+="-static -static-libgcc -static-libstdc++"
 	LIBS=-lm -lz
 endif
+# MacOS is failing compilation after OS updates in 2025...even if using older GCC-11 (GCC10 does no longer install)
 ifeq ($(UNAME),Darwin)
-	CC=/opt/homebrew/bin/gcc-14
-	CFLAGS+=-Wno-unknown-pragmas -Wno-unused-value -std=c11
+	CC=/opt/homebrew/bin/gcc-11
+	CFLAGS+=-Wno-unknown-pragmas -Wno-unused-value -m64 -std=gnu11
 	LIBS=-lz
 endif
 
 #  CPU architecture:
 UNAME_P := $(shell uname -m)
 ifeq ($(UNAME_P),x86_64)
-	CXXFLAGS += -march=native -mtune=native
+	CFLAGS += -march=native -mtune=native
 endif
 ifneq ($(filter arm%,$(UNAME_P)),)
 	CFLAGS += -arch arm64

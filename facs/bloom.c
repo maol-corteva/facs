@@ -418,7 +418,7 @@ char *mmaping (char *source)
   int fd = 0;
   char *sm = NULL;
 
-#ifndef __clang__
+#if !defined(__clang__) && !defined(__APPLE__)
   if ((fd = open (source, O_RDONLY | O_LARGEFILE)) < 0) {
 #else
   if ((fd = open (source, O_RDONLY)) < 0) {
