@@ -35,7 +35,7 @@ WORKDIR /build-dir
 RUN cd /build-dir && wget https://github.com/maol-corteva/facs/archive/refs/heads/master.zip  \
     && unzip master.zip \
     && cd facs-master/facs \
-    && make \
+    && make all \
     && cp -v ./facs  /bin/facs \
     && chmod -fv a+x /bin/facs
 
