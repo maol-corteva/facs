@@ -30,7 +30,8 @@ endif
 #  CPU architecture:
 UNAME_P := $(shell uname -m)
 ifeq ($(UNAME_P),x86_64)
-	CFLAGS += -march=native -mtune=native
+# 	CFLAGS += -march=native -mtune=native. # Native is too limited to the CPU compiled upon.  Causes issues when distributing binaries
+	CFLAGS += -march=x86-64
 endif
 ifneq ($(filter arm%,$(UNAME_P)),)
 	CFLAGS += -arch arm64
